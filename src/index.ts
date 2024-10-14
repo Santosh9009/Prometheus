@@ -1,11 +1,11 @@
 import express from "express";
 import client from "prom-client";
-import { requestCountMiddleware } from "./metrics/requestCount";
+import { metricsMiddleware } from "./metrics";
 
 const app = express();
 
 app.use(express.json());
-app.use(requestCountMiddleware);
+app.use(metricsMiddleware);
 
 
 app.get("/metrics", async (req, res) => {
@@ -15,7 +15,8 @@ app.get("/metrics", async (req, res) => {
 })
 
 
-app.get("/user", (req, res) => {
+app.get("/user", async(req, res) => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
     res.send({
         name: "John Doe",
         age: 25,
